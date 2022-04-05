@@ -1,3 +1,5 @@
+'use strict'
+
 /* Dependencies */
 const express = require('express')
 const app = express()
@@ -26,21 +28,24 @@ app.set('view engine', 'ejs')
 app.use(express.static(path.join(__dirname, 'public'))) // Serve our static files
 app.use(bodyParser.json())
 
-/* Socket Imports */
-require('./sockets.js')(client)
+/* Socketio Imports */
+
+client.io = require('socket.io')(client.server)
+
+// require('./engine/MongoAdapter.js')(client) //Uncomment this and comment out redis if you want to use the mongodb adapter
+require('./engine/RedisAdapter.js')(client)
+
+require('./engine/sockets.js')(client)
 
 /* Routing */
-
-// Public endpoints
 app.use('/', require('./routes/index.js')(client))
 
-/* catchall for authenticated but not found error handling */
 app.get('*', (req, res) => {
   res.status(404).send('Endpoint does not exist.')
 })
 
 /* Listen on http */
-let port = (process.env.PORT || client.settings.defaultPort)
+const port = (process.env.PORT || client.settings.defaultPort)
 
 client.server.listen(port, () => {
   console.log(`Instance :: ${client.appid} :: port :: ${port}!`)
