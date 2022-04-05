@@ -1,5 +1,5 @@
 # Chat App
- A Scalable and stateless chat application built with NodeJS
+ ** THIS REPO IS CURRENTLY BEING MADE AND HAS NO FINISHED FORM YET **
 
 
 
